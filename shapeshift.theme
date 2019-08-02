@@ -1,0 +1,58 @@
+zhann_branch() {
+    if [[ -z "$(git_branch)" ]]; then
+        return
+    fi
+    colorize "[" green true
+    git_branch
+    git_diffs
+    colorize "]" green true
+}
+
+zhann_dir() {
+    colorize "%1~" blue true
+}
+
+function fish_dir() {
+    local last="$(print -P "%1~")"
+    local current="$(print -P "%~")"
+    local truncated="$(echo "${current%/*}/")"
+
+    folders=(${(s:/:)truncated})
+
+    truncated=""
+    if [[ $last != "~" ]]; then
+        for folder in $folders; do
+            truncated="$truncated${folder:0:1}/"
+        done
+
+        truncated=$(colorize "$truncated" $SHAPESHIFT_TRUNCATED_DIR_COLOR $SHAPESHIFT_TRUNCATED_DIR_BOLD)
+    fi
+
+    last=$(colorize "$last" $SHAPESHIFT_LAST_FOLDER_DIR_COLOR $SHAPESHIFT_LAST_FOLDER_DIR_BOLD)
+
+    echo "$truncated$last"
+}
+
+git_position_with_fetch() {
+    if [[ -z "$(git_branch)" ]]
+    then
+        return
+    fi
+
+    git fetch &>/dev/null
+    git_position
+}
+
+SHAPESHIFT_NEWLINE_AFTER_COMMAND=false
+
+SHAPESHIFT_GIT_BRANCH_COLOR=green
+SHAPESHIFT_GIT_BRANCH_BOLD=true
+SHAPESHIFT_GIT_DIFF_SYMBOL="•"
+SHAPESHIFT_GIT_MODIFIED_COLOR=yellow
+SHAPESHIFT_GIT_STAGED_COLOR=green
+SHAPESHIFT_GIT_UNTRACKED_COLOR=red
+
+SHAPESHIFT_LS_COLORS_ENABLED=true
+
+SHAPESHIFT_PROMPT_LEFT_ELEMENTS=(fish_dir zhann_branch)
+SHAPESHIFT_PROMPT_RIGHT_ELEMENTS=()
