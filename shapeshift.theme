@@ -1,3 +1,9 @@
+__omz_lib_path="${0:a:h}/lib"
+
+for file in "$__omz_lib_path"/*.zsh; do
+    source "$file"
+done
+
 zhann_branch() {
     if [[ -z "$(git_branch)" ]]; then
         return
