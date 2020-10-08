@@ -5,9 +5,8 @@ for file in "$__omz_lib_path"/*.zsh; do
 done
 
 zhann_branch() {
-    if [[ -z "$(git_branch)" ]]; then
-        return
-    fi
+    $SHAPESHIFT_IS_GIT_REPO || return
+
     colorize "[" green true
     git_branch
     git_diffs
@@ -40,10 +39,7 @@ function fish_dir() {
 }
 
 git_position_with_fetch() {
-    if [[ -z "$(git_branch)" ]]
-    then
-        return
-    fi
+    $SHAPESHIFT_IS_GIT_REPO || return
 
     git fetch &>/dev/null
     git_position
